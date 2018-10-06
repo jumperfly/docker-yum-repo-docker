@@ -4,6 +4,7 @@ services:
 branches:
   only:
     - master
+    - /^v\d+/
 
 script:
   - |
