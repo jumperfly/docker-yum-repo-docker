@@ -6,7 +6,7 @@ branches:
     - master
 
 script:
-  - docker build . -t jumperfly/yum-repo-docker:master-$TRAVIS_COMMIT
+  - docker build . -t jumperfly/yum-repo-docker:$TRAVIS_BRANCH-${TRAVIS_COMMIT:0:7}
 
 after_success:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
