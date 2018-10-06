@@ -6,8 +6,13 @@ branches:
     - master
 
 script:
-  - docker build . -t jumperfly/yum-repo-docker:$TRAVIS_BRANCH-${TRAVIS_COMMIT:0:7}
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then docker build . -t jumperfly/yum-repo-docker:$TRAVIS_BRANCH-${TRAVIS_COMMIT:0:7}; fi
+  - if [[ "$TRAVIS_BRANCH" =~ ^v[0-9] ]]; then
+    docker pull jumperfly/yum-repo-docker:master-${TRAVIS_COMMIT:0:7}
+    docker tag jumperfly/yum-repo-docker:master-${TRAVIS_COMMIT:0:7} jumperfly/yum-repo-docker:$TRAVIS_BRANCH
+    fi
 
 after_script:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker push jumperfly/yum-repo-docker:$TRAVIS_BRANCH-${TRAVIS_COMMIT:0:7}
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then docker push jumperfly/yum-repo-docker:$TRAVIS_BRANCH-${TRAVIS_COMMIT:0:7}; fi
+  - if [[ "$TRAVIS_BRANCH" =~ ^v[0-9] ]]; then docker push jumperfly/yum-repo-docker:$TRAVIS_BRANCH; fi
